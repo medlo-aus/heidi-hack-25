@@ -1,0 +1,74 @@
+dont be lazy, write all the code i tell you to implement
+
+all `npm` commands should be run with `pnpm`
+
+all tailwind shades of gray should use `neutral` instead of`gray`
+
+always use dark mode, don't assume light mode is used
+
+just for now please leave in any commented out code, i'm using it for reference
+
+any assumptions that you make should be explained, if this is baked into a variable or function then you should use a long comment i.e. /\* _ comment _ /
+
+i'm designing for light/dark mode so use css vars where possible i.e. border, text-muted-forground, instead of dark:border-neutral-700 etc
+
+when using trpc/react-query, follow this format `const shiftsQuery = api.shift.getAll.useQuery();` do not destructure the query, just use a named query object
+
+use isPending instead of isLoading with any react - query / trpc defs
+
+you do not have to wrap page components in `AdminLayout` or `Layout` since this is handled by \_app
+
+on any / admin or / dashboard routes that load images from supabase, use < img /> instead of next / image, we do not want to cache sensitive data
+
+when given the chance you should never do early returns for loading state, you should do `{query.isPending}` inline and try use tailwind skeletons that mimic the existing ui
+
+when asked to implement handlers opt for optimistic updates > mutation > query invalidation i.e.
+
+```tsx
+const handleRateChange: RateEditorProps["onRateChange"] = (value) => {
+  utils.admin.getAssociatedShiftsForEmail.setData(
+    { emailId: email?.id },
+    (old) =>
+      old?.map((s) =>
+        selectedShifts.has(s.id)
+          ? {
+              ...s,
+              ...(value.isDayRate
+                ? { cost: value.cost, isDayRate: true, isHourlyRate: false }
+                : { rate: value.rate, isHourlyRate: true, isDayRate: false }),
+            }
+          : s,
+      ),
+  );
+
+  bulkUpdateShiftsMutation.mutate(
+    {
+      shiftIds: Array.from(selectedShifts),
+      data: {
+        ...(value.isDayRate
+          ? { cost: value.cost, isDayRate: true, isHourlyRate: false }
+          : { rate: value.rate, isHourlyRate: true, isDayRate: false }),
+      },
+    },
+    {
+      onError: (error) => {
+        // import { toast } from "sonner";
+        toast.error(error.message);
+        utils.admin.getAssociatedShiftsForEmail.invalidate({
+          emailId: email?.id,
+        });
+      },
+      onSuccess: () => {
+        toast.success("Successfully updated shifts");
+      },
+    },
+  );
+};
+```
+
+we use `import { api } from "@/utils/api";` i.e. `@` not `~` for import alias
+
+for this project it is very important to use UTC Dates for all date rendering and calculations, as well as when storing dates in the database,
+this is because we are using a timezone agnostic database and we want to avoid any timezone issues
+
+hello RMIT Grads :))))

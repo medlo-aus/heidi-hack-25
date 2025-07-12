@@ -1,0 +1,6 @@
+{
+  "extends": "@heidi/tsconfig/internal-package.json",
+  "include": ["src/**/*.ts", "prisma/**/*.ts"],
+  // "include": ["./prisma/**/*.ts", "./src/**/*.ts", "prisma/seed.js"],
+  "exclude": ["node_modules"]
+}
