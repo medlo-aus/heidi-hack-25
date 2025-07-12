@@ -102,4 +102,10 @@ export const publicRouter = createTRPCRouter({
     const session = await getHeidiSession();
     return session;
   }),
+  getHeidiSessionFromId: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const session = await getHeidiSession(input.id);
+      return session;
+    }),
 });

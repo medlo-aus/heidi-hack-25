@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Clipboard, Clock, Loader, Shield, Stethoscope } from "lucide-react";
 import { toast } from "sonner";
 
+import { ConsultIdsNavigator } from "../components/ConsultIdsNavigator";
 import { HeidiIcon } from "../components/Icons";
 import { api } from "../utils/api";
 
@@ -91,6 +92,7 @@ export default function Home() {
         <div className="container mx-auto flex flex-col items-center gap-4 py-8">
           <Button onClick={start}>Start</Button>
           <Button onClick={stop}>Stop</Button>
+          <ConsultIdsNavigator />
           <Button
             // onClick={() => getHeidiSessionMutation()}
             disabled={getHeidiSessionMutation.isPending}
