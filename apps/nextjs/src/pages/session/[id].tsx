@@ -43,6 +43,7 @@ export default function SessionPage() {
   const generateSchema = async () => {
     const result = await generateSchemaMutation
       .mutateAsync({
+        sessionId: id as string,
         input: JSON.stringify(getHeidiSessionFromIdQuery.data),
       })
       .then((result) => {
@@ -185,7 +186,7 @@ export default function SessionPage() {
             <div className="relative flex min-h-[80vh] flex-col gap-2">
               <div className="absolute left-1/2 top-64 z-10 flex min-w-64 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-2xl border border-black/5 bg-white/50 p-4 backdrop-blur-sm">
                 <BotIcon className="mr-2 min-h-8 min-w-8" />
-                Gemeni Is Preparing Your Patient Notes...
+                Gemini Is Preparing Your Patient Notes...
               </div>
               {Array.from({ length: 32 }).map((_, index) => (
                 <div

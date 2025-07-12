@@ -125,6 +125,7 @@ export const publicRouter = createTRPCRouter({
   generateSchemaMutation: publicProcedure
     .input(
       z.object({
+        sessionId: z.string(),
         input: z.string(),
       }),
     )
@@ -146,8 +147,27 @@ export const publicRouter = createTRPCRouter({
           },
         ],
       });
+      try {
+        const patientSummary = await ctx.db.patient_summary.create({
+          data: {
+            id: `ps_${input.sessionId}`,
+            heidiSessionId: input.sessionId,
+            jsonOutput: result.object,
+          },
+        });
+      } catch (error) {
+        console.error("Error creating patient summary:", error);
+      }
 
       return result.object;
+    }),
+  fetchPatientSummaryFromSessionId: publicProcedure
+    .input(z.object({ sessionId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const patientSummary = await ctx.db.patient_summary.findFirst({
+        where: { heidiSessionId: input.sessionId },
+      });
+      return patientSummary;
     }),
   sendPatientLink: publicProcedure
     .input(
