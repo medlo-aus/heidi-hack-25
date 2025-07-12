@@ -58,7 +58,7 @@ export default function SessionPage() {
   const sendToPatient = async () => {
     toast.promise(
       sendToPatientMutation.mutateAsync({
-        input: "TEST, can update later",
+        input: `/session/${id}`,
       }),
       {
         loading: "Sending to patient...",

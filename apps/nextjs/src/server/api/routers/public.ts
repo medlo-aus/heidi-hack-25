@@ -6,6 +6,8 @@ import { PatientExplainerSchema } from "../../../../types/patient-explainer";
 import { consultNoteSessionIds, getHeidiSession } from "../../heidi-fns";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
+const twilio = require("twilio");
+
 const HEIDI_API_URL =
   "https://registrar.api.heidihealth.com/api/v2/ml-scribe/open-api/";
 
@@ -153,13 +155,24 @@ export const publicRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      // @TODO: add twilio submission
-      // from: "+61483904803", // Medlo SMS number
-      // const accountSid = process.env.TWILIO_ACCOUNT_SID;
-      // const authToken = process.env.TWILIO_AUTH_TOKEN;
-      throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "please implement me!",
-      });
+      const accountSid = process.env.TWILIO_ACCOUNT_SID;
+      const authToken = process.env.TWILIO_AUTH_TOKEN;
+      const client = new twilio(accountSid, authToken);
+
+      try {
+        const message = await client.messages.create({
+          body: `Hey Albert, thank you for your recent vist. Please find your session notes here: ${input.input}. Contact us if you have any further questions!`,
+          from: "+61483904803",
+          to: "+61423659207",
+        });
+
+        // console.log(message.body);
+      } catch (error) {
+        console.error("Error sending patient link:", error);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to send patient link",
+        });
+      }
     }),
 });
