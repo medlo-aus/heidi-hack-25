@@ -6,6 +6,7 @@ await import("./src/env.js");
 
 /** @type {import("next").NextConfig} */
 const config = {
+  output: "standalone", // Add this line
   reactStrictMode: true,
 
   /**
@@ -22,10 +23,10 @@ const config = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: '**',
-        port: '',
-        pathname: '**',
+        protocol: "https",
+        hostname: "**",
+        port: "",
+        pathname: "**",
       },
     ],
   },
@@ -39,7 +40,7 @@ const config = {
   experimental: {
     turbo: {
       resolveAlias: {
-        canvas: './empty-module.ts',
+        canvas: "./empty-module.ts",
       },
     },
     webpack: (config) => {
@@ -56,8 +57,8 @@ const config = {
     ignoreBuildErrors: true,
   },
   eslint: {
-    ignoreDuringBuilds: true
-  }
+    ignoreDuringBuilds: true,
+  },
 };
 
 export default config;
