@@ -1,6 +1,8 @@
 import { TRPCError } from "@trpc/server";
+import { generateObject } from "ai";
 import { z } from "zod";
 
+import { PatientExplainerSchema } from "../../../../types/patient-explainer";
 import { getHeidiSession } from "../../heidi-fns";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
@@ -107,5 +109,31 @@ export const publicRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const session = await getHeidiSession(input.id);
       return session;
+    }),
+  generateSchemaMutation: publicProcedure
+    .input(
+      z.object({
+        input: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const result = await generateObject({
+        model: "google/gemini-2.0-flash-001",
+        schema: PatientExplainerSchema,
+        prompt: [
+          {
+            role: "system",
+            content: `You are a helpful assistant that generates a patient explainer for the following session data.
+              
+              Make up a patient name/age/gender if needed.
+              `,
+          },
+          {
+            role: "user",
+            content: input.input,
+          },
+        ],
+      });
+      return result.object;
     }),
 });
