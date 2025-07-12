@@ -161,7 +161,7 @@ export default function PatientExplainerLetter({
       <Alert className="border-red-200 bg-red-50">
         {/* <AlertTriangle className="h-4 w-4 text-red-600" /> */}
         <AlertTitle className="text-red-800">
-          <div className="h-4 w-4">⚠️</div>
+          <div className="mr-2 inline h-4 w-4">⚠️</div>
           When to Seek Emergency Care
         </AlertTitle>
         <AlertDescription className="space-y-3 text-red-700">

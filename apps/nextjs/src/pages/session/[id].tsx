@@ -47,6 +47,21 @@ export default function SessionPage() {
       });
   };
 
+  const sendToPatientMutation = api.public.sendPatientLink.useMutation();
+
+  const sendToPatient = async () => {
+    toast.promise(
+      sendToPatientMutation.mutateAsync({
+        input: "TEST, can update later",
+      }),
+      {
+        loading: "Sending to patient...",
+        success: "Sent to patient",
+        error: (error) => "Error sending to patient: " + error.message,
+      },
+    );
+  };
+
   if (!id) {
     return <div>No ID</div>;
   }
@@ -74,14 +89,24 @@ export default function SessionPage() {
           </pre>
         )}
         <div className="flex flex-col gap-2">
-          <Button
-            disabled={generateSchemaMutation.isPending}
-            onClick={generateSchema}
-          >
-            {generateSchemaMutation.isPending
-              ? "Generating..."
-              : "Generate Schema"}
-          </Button>
+          <div className="flex flex-row gap-2">
+            <Button
+              disabled={generateSchemaMutation.isPending}
+              onClick={generateSchema}
+            >
+              {generateSchemaMutation.isPending
+                ? "Generating..."
+                : "Generate Patient Notes"}
+            </Button>
+            <Button
+              onClick={sendToPatient}
+              //   disabled={!sendToPatientMutation.isPending}
+            >
+              {sendToPatientMutation.isPending
+                ? "Sending..."
+                : "Send to Patient"}
+            </Button>
+          </div>
           {generatedSchema ? (
             <PatientExplainerLetter data={generatedSchema} />
           ) : (

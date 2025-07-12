@@ -1,4 +1,5 @@
 import { type NextApiRequest, type NextApiResponse } from "next";
+import { generateText } from "ai";
 
 import {
   consultNoteSessionIds,
@@ -25,6 +26,16 @@ export default async function handler(
   //     console.error(err);
   //     return null;
   //   });
+
+  const result = await generateText({
+    model: "google/gemini-2.0-flash-001",
+    prompt: [
+      {
+        role: "user",
+        content: "how are you today?",
+      },
+    ],
+  });
 
   res.status(200).json({ allSessions });
 }

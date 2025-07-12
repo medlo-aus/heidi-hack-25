@@ -104,6 +104,10 @@ export const publicRouter = createTRPCRouter({
     const session = await getHeidiSession();
     return session;
   }),
+  fetchSelectSessions: publicProcedure.query(async ({ ctx }) => {
+    const sessions = await getHeidiSession();
+    return sessions;
+  }),
   getHeidiSessionFromId: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
@@ -135,5 +139,21 @@ export const publicRouter = createTRPCRouter({
         ],
       });
       return result.object;
+    }),
+  sendPatientLink: publicProcedure
+    .input(
+      z.object({
+        input: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      // @TODO: add twilio submission
+      // from: "+61483904803", // Medlo SMS number
+      // const accountSid = process.env.TWILIO_ACCOUNT_SID;
+      // const authToken = process.env.TWILIO_AUTH_TOKEN;
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "please implement me!",
+      });
     }),
 });
