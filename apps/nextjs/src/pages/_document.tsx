@@ -4,11 +4,8 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head>
-        <title>Doccy - Medical Certificates </title>
-        <meta
-          name="description"
-          content="Get Medical Certificates and Scripts Online. Fast, convenient, and secure telehealth services. Connect with licensed doctors from the comfort of your home."
-        />
+        <title>Last Mile 🚀 </title>
+        <meta name="description" content="Last Mile 🚀 Patient Continuity" />
         {process.env.NODE_ENV === "development" ? (
           <link href="/favicon-dev.png" rel="icon" />
         ) : (
