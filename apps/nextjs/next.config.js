@@ -34,7 +34,6 @@ const config = {
     "@heidi/api",
     "@heidi/db",
     "@heidi/ui",
-    "@heidi/validators",
   ],
   experimental: {
     turbo: {
