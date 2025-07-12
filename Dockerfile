@@ -1,31 +1,23 @@
-# Dockerfile - Skip postinstall scripts and run Prisma generate manually
+# Use Node.js as the base image
 FROM node:20-alpine
 
-# Install pnpm
-RUN npm install -g pnpm@9.7.1 && corepack enable
-
+# Set the working directory in the container
 WORKDIR /app
 
-# Copy everything
+# Copy package.json and package-lock.json
+COPY package*.json ./heidi-gcp/
+
+# Install dependencies
+RUN npm ci --only=production
+
+# Copy the app's source code
 COPY . .
 
-# Set environment variables
-ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
-ENV SKIP_ENV_VALIDATION=true
-ENV PORT=8080
-
-# Install dependencies but skip postinstall scripts
-RUN pnpm install --no-frozen-lockfile --prefer-offline --ignore-scripts
-
-# Generate Prisma client manually (after dependencies are installed)
-RUN pnpm --filter=@heidi/db exec prisma generate
-
-# Build ONLY the Next.js app
-RUN pnpm --filter=@heidi/nextjs build
+# Build the Next app
+RUN npm run build
 
 # Expose port
-EXPOSE 8080
+EXPOSE 3000
 
-# Start ONLY the Next.js app
-CMD ["pnpm", "--filter=@heidi/nextjs", "start"]
+# Start the application
+CMD ["npm", "start"]
