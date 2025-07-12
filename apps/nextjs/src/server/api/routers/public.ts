@@ -181,21 +181,21 @@ export const publicRouter = createTRPCRouter({
       const authToken = process.env.TWILIO_AUTH_TOKEN;
       const client = new twilio(accountSid, authToken);
 
-      // const patientSummary = await ctx.db.patient_summary.findFirst({
-      //   where: {
-      //     heidiSessionId: input.input,
-      //   },
-      //   orderBy: {
-      //     createdAt: "desc",
-      //   },
-      // });
+      const patientSummary = await ctx.db.patient_summary.findFirst({
+        where: {
+          heidiSessionId: input.input,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
 
-      // if (!patientSummary) {
-      //   throw new TRPCError({
-      //     code: "NOT_FOUND",
-      //     message: "Please generate the patient summary first",
-      //   });
-      // }
+      if (!patientSummary) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Please generate the patient summary first",
+        });
+      }
 
       try {
         const message = await client.messages.create({

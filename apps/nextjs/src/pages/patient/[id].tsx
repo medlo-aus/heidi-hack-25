@@ -53,21 +53,6 @@ export default function SessionPage() {
       });
   };
 
-  const sendToPatientMutation = api.public.sendPatientLink.useMutation();
-
-  const sendToPatient = async () => {
-    toast.promise(
-      sendToPatientMutation.mutateAsync({
-        input: `https://heidi-hack-25-nextjs.vercel.app/session/${id}`,
-      }),
-      {
-        loading: "Sending to patient...",
-        success: "Sent to patient",
-        error: (error) => "Error sending to patient: " + error.message,
-      },
-    );
-  };
-
   const fetchPatientSummaryFromSessionIdQuery =
     api.public.fetchPatientSummaryFromSessionId.useQuery(
       {
