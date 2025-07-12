@@ -46,8 +46,21 @@ export const getAuthSession = async () => {
   }
 };
 
-export const authenticateAndReturnAuthAndSessionId = async () => {
+export const authenticateAndReturnAuthAndSessionId = async (
+  sessionId?: string,
+) => {
   const authSession = await getAuthSession();
+
+  /* 
+    If sessionId is provided, skip session creation and return existing sessionId
+    This allows reusing existing sessions without creating new ones
+  */
+  if (sessionId) {
+    return {
+      authSession,
+      sessionId,
+    };
+  }
 
   const response = await fetch(`${HEIDI_API_URL}sessions`, {
     method: "POST",
@@ -73,14 +86,15 @@ export const authenticateAndReturnAuthAndSessionId = async () => {
   };
 };
 
-export const getHeidiSession = async () => {
+export const getHeidiSession = async (passedSessionId?: string) => {
   /* 
     This function combines getAuthSession and authenticateAndReturnAuthAndSessionId
     to fetch a complete Heidi session with patient and consultation details.
     All dates are handled in UTC to maintain timezone consistency.
   */
-  const { authSession, sessionId } =
-    await authenticateAndReturnAuthAndSessionId();
+  const props = await authenticateAndReturnAuthAndSessionId(passedSessionId);
+
+  const { authSession, sessionId } = props;
 
   const response = await fetch(`${HEIDI_API_URL}sessions/${sessionId}`, {
     method: "GET",
