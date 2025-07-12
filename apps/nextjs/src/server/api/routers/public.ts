@@ -3,7 +3,7 @@ import { generateObject } from "ai";
 import { z } from "zod";
 
 import { PatientExplainerSchema } from "../../../../types/patient-explainer";
-import { getHeidiSession } from "../../heidi-fns";
+import { consultNoteSessionIds, getHeidiSession } from "../../heidi-fns";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
 const HEIDI_API_URL =
@@ -105,8 +105,14 @@ export const publicRouter = createTRPCRouter({
     return session;
   }),
   fetchSelectSessions: publicProcedure.query(async ({ ctx }) => {
-    const sessions = await getHeidiSession();
-    return sessions;
+    const allSessions = await Promise.allSettled(
+      consultNoteSessionIds.map((consultNote) => getHeidiSession(consultNote)),
+    ).then((sessions) => {
+      return sessions
+        .filter((session) => session.status === "fulfilled")
+        .map((session) => session.value);
+    });
+    return allSessions;
   }),
   getHeidiSessionFromId: publicProcedure
     .input(z.object({ id: z.string() }))
