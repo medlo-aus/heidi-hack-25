@@ -14,11 +14,11 @@ export default function Document() {
         ) : (
           <link href="/favicon.png" rel="icon" />
         )}
-        <meta
+        {/* <meta
           property="og:image"
           key="og:image"
           content="https://doccy.com.au/meta.png"
-        />
+        /> */}
       </Head>
       <body>
         <Main />
