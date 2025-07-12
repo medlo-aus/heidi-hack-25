@@ -97,9 +97,11 @@ export default function SessionPage() {
     <div className="flex w-full flex-row justify-center gap-4 p-4">
       <div className="flex flex-col gap-2">
         <div className="space-y-2">
-          <div className="w-fit overflow-clip rounded-lg border border-black/10">
-            <Image src="/heidi.png" alt="Last Mile" width={40} height={40} />
-          </div>
+          <Link href="/">
+            <div className="w-fit overflow-clip rounded-lg border border-black/10">
+              <Image src="/heidi.png" alt="Last Mile" width={40} height={40} />
+            </div>
+          </Link>
           {fetchSelectSessionsQuery.data?.map((session) => {
             const isCurrentSession = session.session_id === id;
             return (

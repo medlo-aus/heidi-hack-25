@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -78,6 +79,16 @@ export default function Home() {
       <header className="absolute top-0 z-50 w-full bg-transparent">
         <div className="container mx-auto flex h-14 items-center px-2 sm:px-4">
           <div className="mr-4 flex items-center">
+            <Link href="/">
+              <div className="mr-2 w-fit overflow-clip rounded-lg border border-black/10">
+                <Image
+                  src="/heidi.png"
+                  alt="Last Mile"
+                  width={40}
+                  height={40}
+                />
+              </div>
+            </Link>
             <Link className="mr-6 flex items-center space-x-2" href="/">
               <span className="inline-block text-xl font-extrabold text-black">
                 Heidi
