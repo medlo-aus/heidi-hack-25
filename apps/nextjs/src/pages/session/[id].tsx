@@ -16,6 +16,7 @@ import { GoogleIcon } from "../../components/Icons";
 import PatientExplainerLetter from "../../components/patient-explainer-letter";
 import { Button } from "../../components/ui/button";
 import { Card } from "../../components/ui/card";
+import { Input } from "../../components/ui/input";
 import { cn } from "../../lib/utils";
 import { consultNoteSessionIds } from "../../server/heidi-fns";
 import { api } from "../../utils/api";
@@ -53,12 +54,15 @@ export default function SessionPage() {
       });
   };
 
+  const [phoneNumber, setPhoneNumber] = useState("+61412067761");
+
   const sendToPatientMutation = api.public.sendPatientLink.useMutation();
 
   const sendToPatient = async () => {
     toast.promise(
       sendToPatientMutation.mutateAsync({
-        input: `https://heidi-hack-25-nextjs.vercel.app/session/${id}`,
+        input: id as string,
+        phoneNumber: phoneNumber,
       }),
       {
         loading: "Sending to patient...",
@@ -170,6 +174,12 @@ export default function SessionPage() {
                 ? "Sending..."
                 : "Send to Patient"}
             </Button>
+            <Input
+              className="w-fit"
+              defaultValue={"+61412067671"}
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+            />
           </div>
           {generateSchemaMutation.isPending && (
             <div className="relative flex min-h-[80vh] flex-col gap-2">

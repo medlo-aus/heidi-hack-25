@@ -146,12 +146,14 @@ export const publicRouter = createTRPCRouter({
           },
         ],
       });
+
       return result.object;
     }),
   sendPatientLink: publicProcedure
     .input(
       z.object({
         input: z.string(),
+        phoneNumber: z.string().optional().default("+61423659207"),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -159,12 +161,29 @@ export const publicRouter = createTRPCRouter({
       const authToken = process.env.TWILIO_AUTH_TOKEN;
       const client = new twilio(accountSid, authToken);
 
+      // const patientSummary = await ctx.db.patient_summary.findFirst({
+      //   where: {
+      //     heidiSessionId: input.input,
+      //   },
+      //   orderBy: {
+      //     createdAt: "desc",
+      //   },
+      // });
+
+      // if (!patientSummary) {
+      //   throw new TRPCError({
+      //     code: "NOT_FOUND",
+      //     message: "Please generate the patient summary first",
+      //   });
+      // }
+
       try {
         const message = await client.messages.create({
-          body: `Hey Albert, thank you for your recent vist. Please find your session notes here: ${input.input}. Contact us if you have any further questions!`,
+          body: `Hey Albert, thank you for your recent vist. Please find your session notes here: https://heidi-hack-25-nextjs.vercel.app/session/${input.input}. Contact us if you have any further questions!`,
           from: "+61483904803",
-          to: "+61423659207",
+          to: input.phoneNumber,
         });
+        return "success!";
 
         // console.log(message.body);
       } catch (error) {
