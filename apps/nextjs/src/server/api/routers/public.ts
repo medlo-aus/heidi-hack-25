@@ -166,6 +166,9 @@ export const publicRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const patientSummary = await ctx.db.patient_summary.findFirst({
         where: { heidiSessionId: input.sessionId },
+        orderBy: {
+          createdAt: "desc",
+        },
       });
       return patientSummary;
     }),
