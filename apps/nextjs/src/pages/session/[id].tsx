@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { ExternalLinkIcon } from "@radix-ui/react-icons";
 import { generateObject } from "ai";
 import { formatDistanceToNow } from "date-fns";
+import { SmartphoneIcon } from "lucide-react";
 import { toast } from "sonner";
 import z from "zod";
 
@@ -15,6 +16,7 @@ import { GoogleIcon } from "../../components/Icons";
 import PatientExplainerLetter from "../../components/patient-explainer-letter";
 import { Button } from "../../components/ui/button";
 import { Card } from "../../components/ui/card";
+import { cn } from "../../lib/utils";
 import { consultNoteSessionIds } from "../../server/heidi-fns";
 import { api } from "../../utils/api";
 
@@ -76,31 +78,40 @@ export default function SessionPage() {
     <div className="flex w-full flex-row gap-4 p-4">
       <div className="flex flex-col gap-2">
         <div className="space-y-2">
-          {fetchSelectSessionsQuery.data?.map((session) => (
-            <Link
-              href={`/session/${session.session_id}`}
-              key={session.session_id}
-              className="block"
-            >
-              <Card className="cursor-pointer border border-border p-3 transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-800">
-                <div className="flex items-center justify-between">
-                  <div className="flex flex-col">
-                    <span className="text-sm font-medium">
-                      {session.session_name}
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      {formatDistanceToNow(new Date(session.created_at))} ago
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      {session.session_id.slice(0, 8)}...
-                      {session.session_id.slice(-8)}
-                    </span>
+          {fetchSelectSessionsQuery.data?.map((session) => {
+            const isCurrentSession = session.session_id === id;
+            return (
+              <Link
+                href={`/session/${session.session_id}`}
+                key={session.session_id}
+                className="block"
+              >
+                <Card
+                  className={cn(
+                    "cursor-pointer border border-border p-3 transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-800",
+                    isCurrentSession &&
+                      "border-primary bg-neutral-50 ring-2 ring-primary dark:bg-neutral-800",
+                  )}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium">
+                        {session.session_name}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {formatDistanceToNow(new Date(session.created_at))} ago
+                      </span>
+                      <span className="font-mono text-xs text-muted-foreground">
+                        {session.session_id.slice(0, 8)}...
+                        {session.session_id.slice(-8)}
+                      </span>
+                    </div>
+                    <ExternalLinkIcon className="h-4 w-4 text-muted-foreground" />
                   </div>
-                  <ExternalLinkIcon className="h-4 w-4 text-muted-foreground" />
-                </div>
-              </Card>
-            </Link>
-          ))}
+                </Card>
+              </Link>
+            );
+          })}
           {fetchSelectSessionsQuery.isPending && (
             <>
               {Array.from({ length: 5 }).map((_, index) => (
@@ -135,15 +146,6 @@ export default function SessionPage() {
         {getHeidiSessionFromIdQuery.isError && (
           <div className="flex">Error</div>
         )}
-        <summary className="list-none">
-          <details>
-            {getHeidiSessionFromIdQuery.data && (
-              <pre className="max-h-[500px] max-w-lg overflow-y-auto whitespace-pre-wrap rounded-lg bg-neutral-900 p-4 text-xs text-white">
-                {JSON.stringify(getHeidiSessionFromIdQuery.data, null, 2)}
-              </pre>
-            )}
-          </details>
-        </summary>
 
         <div className="flex flex-col gap-2">
           <div className="flex flex-row gap-2">
@@ -160,6 +162,7 @@ export default function SessionPage() {
               onClick={sendToPatient}
               //   disabled={!sendToPatientMutation.isPending}
             >
+              <SmartphoneIcon className="mr-2 h-4 w-4" />
               {sendToPatientMutation.isPending
                 ? "Sending..."
                 : "Send to Patient"}
@@ -171,6 +174,15 @@ export default function SessionPage() {
             <div className="flex">Please generate letter</div>
           )}
         </div>
+        <summary className="list-none">
+          <details>
+            {getHeidiSessionFromIdQuery.data && (
+              <pre className="max-h-[500px] max-w-lg overflow-y-auto whitespace-pre-wrap rounded-lg bg-neutral-900 p-4 text-xs text-white">
+                {JSON.stringify(getHeidiSessionFromIdQuery.data, null, 2)}
+              </pre>
+            )}
+          </details>
+        </summary>
       </div>
       {/* <ConsultIdsNavigator /> */}
     </div>

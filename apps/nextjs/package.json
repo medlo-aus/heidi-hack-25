@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "pnpm with-env next build",
+    "build": "pnpm with-env next build --turbo",
     "db:generate": "prisma generate",
     "db:migrate-dev": "prisma migrate dev",
     "db:migrate": "prisma migrate deploy",
