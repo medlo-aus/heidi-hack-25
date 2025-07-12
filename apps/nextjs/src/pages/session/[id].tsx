@@ -58,7 +58,7 @@ export default function SessionPage() {
   const sendToPatient = async () => {
     toast.promise(
       sendToPatientMutation.mutateAsync({
-        input: `/session/${id}`,
+        input: `https://heidi-hack-25-nextjs.vercel.app/session/${id}`,
       }),
       {
         loading: "Sending to patient...",
@@ -174,6 +174,17 @@ export default function SessionPage() {
             <div className="flex">Please generate letter</div>
           )}
         </div>
+
+        <details className="transcript">
+          <summary className="list-none">
+            {getHeidiSessionFromIdQuery.data?.consult_note && (
+              <div className="max-h-[500px] max-w-lg overflow-y-auto whitespace-pre-wrap rounded-lg bg-neutral-900 p-4 text-xs text-white">
+                {getHeidiSessionFromIdQuery.data.consult_note.result}
+              </div>
+            )}
+          </summary>
+        </details>
+
         <summary className="list-none">
           <details>
             {getHeidiSessionFromIdQuery.data && (
