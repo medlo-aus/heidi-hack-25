@@ -75,38 +75,7 @@ export default function SessionPage() {
   }
 
   return (
-    <div className="flex w-full flex-row gap-4 p-4">
-      <div className="flex flex-col gap-2">
-        <div className="space-y-2">
-          {fetchSelectSessionsQuery.isPending && (
-            <>
-              {Array.from({ length: 5 }).map((_, index) => (
-                <Card key={index} className="border border-border p-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex flex-col space-y-2">
-                      <div className="h-4 w-32 animate-pulse rounded bg-neutral-200 dark:bg-neutral-700" />
-                      <div className="h-3 w-20 animate-pulse rounded bg-neutral-200 dark:bg-neutral-700" />
-                      <div className="h-3 w-24 animate-pulse rounded bg-neutral-200 dark:bg-neutral-700" />
-                    </div>
-                    <div className="h-4 w-4 animate-pulse rounded bg-neutral-200 dark:bg-neutral-700" />
-                  </div>
-                </Card>
-              ))}
-            </>
-          )}
-        </div>
-      </div>
-
-      {getHeidiSessionFromIdQuery.isLoading && (
-        <div className="flex flex-col gap-2">
-          {Array.from({ length: 10 }).map((_, index) => (
-            <div
-              key={index}
-              className="h-4 w-12 animate-pulse rounded-full bg-neutral-400"
-            />
-          ))}
-        </div>
-      )}
+    <div className="flex w-full flex-row justify-center gap-4 p-4">
       <div className="flex flex-col gap-4">
         {/* <div className="flex">SessionPage - ID: {id}</div> */}
         {getHeidiSessionFromIdQuery.isError && (
