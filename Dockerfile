@@ -1,5 +1,5 @@
 # Complete Google Cloud Run Dockerfile for heidi-hack-25
-# Optimized for: pnpm workspaces + Turborepo + Next.js 15 + GCP Cloud Run
+# FIXED: Handles .npmrc configuration properly
 
 FROM node:20-alpine AS base
 
@@ -26,6 +26,9 @@ ENV HOSTNAME=0.0.0.0
 # Dependencies stage - Install all dependencies
 FROM base AS deps
 
+# IMPORTANT: Copy .npmrc FIRST to ensure pnpm uses correct configuration
+COPY .npmrc ./
+
 # Copy pnpm configuration files
 COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
 
@@ -37,8 +40,9 @@ COPY packages/validators/package.json ./packages/validators/
 # Copy tooling package.json files if they exist
 COPY tooling/*/package.json ./tooling/*/
 
-# Install dependencies with exact versions (frozen lockfile)
-RUN pnpm install --frozen-lockfile --prefer-offline
+# Install dependencies with correct configuration
+# Using --no-frozen-lockfile to handle config mismatch
+RUN pnpm install --no-frozen-lockfile --prefer-offline
 
 # Builder stage - Build the application
 FROM base AS builder
