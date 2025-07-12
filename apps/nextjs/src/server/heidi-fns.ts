@@ -6,6 +6,13 @@ export const HEIDI_API_URL =
 export const READ_ONLY_EMAIL = "test@heidihealth.com";
 export const TRANSCRIPTION_EMAIL = "hackathon@heidihealth.com";
 
+export const consultNoteSessionIds = [
+  "109809741668977226983209560304378806042",
+  "145724014565595129429559506201071574120",
+  "13492367013098732992868300977265587593",
+  "11901873742259810244555103576895445913",
+];
+
 export const getAuthSession = async () => {
   try {
     /* 
