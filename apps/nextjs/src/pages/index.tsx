@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Clipboard, Clock, Loader, Shield, Stethoscope } from "lucide-react";
 
+import { HeidiIcon } from "../components/Icons";
 import { api } from "../utils/api";
 
 export default function Home() {
@@ -35,6 +36,7 @@ export default function Home() {
           </div>
         </div>
       </header>
+      <HeidiIcon className="absolute left-0 top-0 -z-10 h-[240px] w-full" />
 
       <main className="prose flex-1">
         <div className="container mx-auto flex flex-col items-center gap-4 py-8">
