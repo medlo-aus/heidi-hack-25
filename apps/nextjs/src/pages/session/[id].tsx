@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ExternalLinkIcon } from "@radix-ui/react-icons";
 import { generateObject } from "ai";
 import { formatDistanceToNow } from "date-fns";
-import { SmartphoneIcon } from "lucide-react";
+import { BotIcon, SmartphoneIcon } from "lucide-react";
 import { toast } from "sonner";
 import z from "zod";
 
@@ -68,7 +68,20 @@ export default function SessionPage() {
     );
   };
 
-  const fetchSelectSessionsQuery = api.public.fetchSelectSessions.useQuery();
+  useEffect(() => {
+    setGeneratedSchema(null);
+  }, [id]);
+
+  const fetchSelectSessionsQuery = api.public.fetchSelectSessions.useQuery(
+    undefined,
+    {
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchInterval: Infinity,
+      refetchOnReconnect: false,
+      refetchIntervalInBackground: false,
+    },
+  );
 
   if (!id) {
     return <div>No ID</div>;
@@ -131,16 +144,6 @@ export default function SessionPage() {
         </div>
       </div>
 
-      {getHeidiSessionFromIdQuery.isLoading && (
-        <div className="flex flex-col gap-2">
-          {Array.from({ length: 10 }).map((_, index) => (
-            <div
-              key={index}
-              className="h-4 w-12 animate-pulse rounded-full bg-neutral-400"
-            />
-          ))}
-        </div>
-      )}
       <div className="flex flex-col gap-4">
         {/* <div className="flex">SessionPage - ID: {id}</div> */}
         {getHeidiSessionFromIdQuery.isError && (
@@ -168,12 +171,39 @@ export default function SessionPage() {
                 : "Send to Patient"}
             </Button>
           </div>
+          {generateSchemaMutation.isPending && (
+            <div className="relative flex min-h-[80vh] flex-col gap-2">
+              <div className="absolute left-1/2 top-64 z-10 flex min-w-64 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-2xl border border-black/5 bg-white/50 p-4 backdrop-blur-sm">
+                <BotIcon className="mr-2 min-h-8 min-w-8" />
+                Gemeni Is Preparing Your Patient Notes...
+              </div>
+              {Array.from({ length: 32 }).map((_, index) => (
+                <div
+                  key={index}
+                  className={`h-4 animate-pulse rounded-full bg-neutral-400 ${
+                    index % 4 === 0
+                      ? "w-32"
+                      : index % 4 === 1
+                        ? "w-24"
+                        : index % 4 === 2
+                          ? "w-40"
+                          : "w-16"
+                  }`}
+                />
+              ))}
+            </div>
+          )}
           {generatedSchema ? (
             <PatientExplainerLetter data={generatedSchema} />
-          ) : (
-            <div className="flex">Please generate letter</div>
-          )}
+          ) : null}
         </div>
+        {getHeidiSessionFromIdQuery.data?.consult_note.result && (
+          <div className="max-w-128 relative max-h-32 overflow-y-auto rounded-lg border border-border">
+            <div className="whitespace-pre-wrap p-4 text-xs">
+              {getHeidiSessionFromIdQuery.data?.consult_note.result}
+            </div>
+          </div>
+        )}
         <summary className="list-none">
           <details>
             {getHeidiSessionFromIdQuery.data && (

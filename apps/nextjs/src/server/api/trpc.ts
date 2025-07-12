@@ -38,28 +38,28 @@ type CreateContextOptions = Record<string, never> & {
 export const getUser = async ({ req, res }: GetServerSidePropsContext) => {
   // First try to get user from Authorization header (client-side requests)
   const authHeader = req.headers.authorization;
-  if (authHeader && authHeader.startsWith('Bearer ')) {
+  if (authHeader?.startsWith("Bearer ")) {
     try {
       const token = authHeader.substring(7);
       const supabase = createClient({ req, res });
-      
+
       // Verify the token using the admin client
       const { data, error } = await supabase.auth.getUser(token);
-      
+
       if (error) {
-        console.error('Error verifying token:', error);
+        console.error("Error verifying token:", error);
         return { error: "Invalid token" };
       }
-      
+
       if (data.user) {
         return data.user;
       }
     } catch (error) {
-      console.error('Error processing auth header:', error);
+      console.error("Error processing auth header:", error);
       return { error: "Auth processing error" };
     }
   }
-  
+
   // If no Authorization header, fall back to server-side session
   const supabase = createClient({ req, res });
   const {
@@ -99,14 +99,14 @@ const createInnerTRPCContext = (_opts: CreateContextOptions) => {
  */
 export const createTRPCContext = async (_opts: CreateNextContextOptions) => {
   const { req, res } = _opts;
-  
+
   // Try to get the user before creating the context
   const user = await getUser({ req, res });
-  
+
   return createInnerTRPCContext({
     req,
     res,
-    user: !user?.error ? user : undefined
+    user: !user?.error ? user : undefined,
   });
 };
 
