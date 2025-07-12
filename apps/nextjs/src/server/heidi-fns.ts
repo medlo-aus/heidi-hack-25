@@ -3,6 +3,9 @@ import { TRPCError } from "@trpc/server";
 export const HEIDI_API_URL =
   "https://registrar.api.heidihealth.com/api/v2/ml-scribe/open-api/";
 
+export const READ_ONLY_EMAIL = "test@heidihealth.com";
+export const TRANSCRIPTION_EMAIL = "hackathon@heidihealth.com";
+
 export const getAuthSession = async () => {
   try {
     /* 
