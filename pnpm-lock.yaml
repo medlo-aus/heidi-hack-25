@@ -69,9 +69,6 @@ importers:
       '@heidi/db':
         specifier: workspace:*
         version: link:../../packages/db
-      '@heidi/validators':
-        specifier: workspace:*
-        version: link:../../packages/validators
       '@hookform/resolvers':
         specifier: ^3.9.0
         version: 3.10.0(react-hook-form@7.60.0(react@18.3.1))
@@ -253,7 +250,7 @@ importers:
         specifier: ^0.446.0
         version: 0.446.0(react@18.3.1)
       next:
-        specifier: ^15.2.4
+        specifier: ^15.3.5
         version: 15.3.5(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       next-mdx-remote:
         specifier: ^5.0.0
