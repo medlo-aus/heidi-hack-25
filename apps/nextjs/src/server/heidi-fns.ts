@@ -1,0 +1,140 @@
+import { TRPCError } from "@trpc/server";
+
+export const HEIDI_API_URL =
+  "https://registrar.api.heidihealth.com/api/v2/ml-scribe/open-api/";
+
+export const getAuthSession = async () => {
+  try {
+    /* 
+          Fetch JWT token from Heidi API
+          This endpoint is used to get a JWT token for third party integrations
+          The token is used to authenticate requests to the Heidi API
+          The token expires after a certain time period
+        */
+    const response = await fetch(
+      `${HEIDI_API_URL}jwt?email=test@heidihealth.com&third_party_internal_id=123`,
+      {
+        method: "GET",
+        headers: {
+          "Heidi-Api-Key": "MI0QanRHLm4ovFkBVqcBrx3LCiWLT8eu",
+        },
+      },
+    );
+
+    if (!response.ok) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Failed to fetch JWT token",
+      });
+    }
+
+    const data = (await response.json()) as {
+      token: string;
+      expiration_time: string;
+    };
+
+    return {
+      token: data.token,
+      expirationTime: new Date(data.expiration_time),
+    };
+  } catch (error) {
+    console.error("Error fetching JWT token:", error);
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Failed to fetch JWT token",
+    });
+  }
+};
+
+export const authenticateAndReturnAuthAndSessionId = async () => {
+  const authSession = await getAuthSession();
+
+  const response = await fetch(`${HEIDI_API_URL}sessions`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${authSession.token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Failed to authenticate and return auth and session id",
+    });
+  }
+
+  const data = (await response.json()) as {
+    session_id: string;
+  };
+
+  return {
+    authSession,
+    sessionId: data.session_id,
+  };
+};
+
+export const getHeidiSession = async () => {
+  /* 
+    This function combines getAuthSession and authenticateAndReturnAuthAndSessionId
+    to fetch a complete Heidi session with patient and consultation details.
+    All dates are handled in UTC to maintain timezone consistency.
+  */
+  const { authSession, sessionId } =
+    await authenticateAndReturnAuthAndSessionId();
+
+  const response = await fetch(`${HEIDI_API_URL}sessions/${sessionId}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${authSession.token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Failed to fetch Heidi session details",
+    });
+  }
+
+  const data = (await response.json()) as {
+    session: {
+      session_id: string;
+      session_name: string;
+      patient: {
+        name: string;
+        gender: string | null;
+        dob: string | null;
+      };
+      audio: unknown[];
+      clinician_notes: unknown[];
+      consult_note: {
+        status: string;
+        result: string;
+        heading: string;
+        brain: string;
+        voice_style: string | null;
+        generation_method: string;
+        template_id: string | null;
+        ai_command_id: string | null;
+        ai_command_text: string | null;
+        feedback: string | null;
+        dictation_cleanup_mode: string | null;
+      };
+      duration: number;
+      created_at: string;
+      updated_at: string;
+      language_code: string;
+      output_language_code: string;
+      documents: unknown | null;
+      ehr_appt_id: string | null;
+      ehr_provider: string;
+      ehr_patient_id: string | null;
+    };
+  };
+
+  return {
+    ...data.session,
+    created_at: new Date(data.session.created_at).toISOString(),
+    updated_at: new Date(data.session.updated_at).toISOString(),
+  };
+};

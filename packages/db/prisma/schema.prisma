@@ -1,0 +1,39 @@
+// schema.prisma
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  directUrl  = env("DIRECT_URL")
+  extensions = [pg_trgm]
+}
+
+generator zod {
+  provider                         = "zod-prisma-types"
+  createInputTypes                 = false
+  createModelTypes                 = true
+  addInputTypeValidation           = false
+  addIncludeType                   = false
+  addSelectType                    = false
+  validateWhereUniqueInput         = false
+  createOptionalDefaultValuesTypes = true
+  createRelationValuesTypes        = true
+  createPartialTypes               = true
+}
+
+enum ConsultationStatus {
+  WAITING
+  ACTIVE
+  COMPLETE
+}
+
+model user {
+  id        String @id @default(uuid())
+  authSub   String @unique
+  firstName String
+  lastName  String
+}

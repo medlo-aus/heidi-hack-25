@@ -1,0 +1,43 @@
+{
+  "name": "@heidi/db",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "license": "MIT",
+  "scripts": {
+    "format": "prettier --check . --ignore-path ../../.gitignore",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false",
+    "clean": "rm -rf .turbo node_modules types",
+    "migrate-dev": "pnpm with-env prisma migrate dev --preview-feature",
+    "db:generate": "pnpm with-env prisma generate",
+    "db:pull": "pnpm with-env prisma db pull",
+    "db:push": "pnpm with-env prisma db push --accept-data-loss --skip-generate",
+    "db:push-gen": "pnpm with-env prisma db push --accept-data-loss",
+    "db:migrate-dev": "pnpm with-env prisma migrate dev --preview-feature",
+    "db:studio": "prisma studio",
+    "dev": "pnpm with-env prisma studio --port 5556",
+    "deploy-vercel": "prisma migrate deploy --preview-feature && prisma generate",
+    "with-env": "dotenv -e ../../.env --",
+    "postinstall": "prisma generate"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.1.0",
+    "@vercel/postgres": "^0.9.0",
+    "zod": "catalog:",
+    "zod-prisma-types": "^3.2.1"
+  },
+  "devDependencies": {
+    "@heidi/eslint-config": "workspace:*",
+    "@heidi/prettier-config": "workspace:*",
+    "@heidi/tsconfig": "workspace:*",
+    "dotenv-cli": "^7.4.2",
+    "eslint": "catalog:",
+    "prettier": "catalog:",
+    "prisma": "^6.1.0",
+    "typescript": "catalog:"
+  },
+  "prettier": "@heidi/prettier-config"
+}
