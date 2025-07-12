@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ExternalLinkIcon } from "@radix-ui/react-icons";
@@ -96,6 +97,9 @@ export default function SessionPage() {
     <div className="flex w-full flex-row justify-center gap-4 p-4">
       <div className="flex flex-col gap-2">
         <div className="space-y-2">
+          <div className="w-fit overflow-clip rounded-lg border border-black/10">
+            <Image src="/heidi.png" alt="Last Mile" width={40} height={40} />
+          </div>
           {fetchSelectSessionsQuery.data?.map((session) => {
             const isCurrentSession = session.session_id === id;
             return (
@@ -208,16 +212,6 @@ export default function SessionPage() {
             <PatientExplainerLetter data={generatedSchema} />
           ) : null}
         </div>
-
-        {/* <details className="transcript">
-          <summary className="list-none">
-            {getHeidiSessionFromIdQuery.data?.consult_note && (
-              <div className="max-h-[500px] max-w-lg overflow-y-auto whitespace-pre-wrap rounded-lg bg-neutral-900 p-4 text-xs text-white">
-                {getHeidiSessionFromIdQuery.data.consult_note.result}
-              </div>
-            )}
-          </summary>
-        </details> */}
 
         <summary className="list-none">
           <details>
