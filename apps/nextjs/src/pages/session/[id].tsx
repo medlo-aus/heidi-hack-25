@@ -92,7 +92,7 @@ export default function SessionPage() {
   }
 
   return (
-    <div className="flex w-full flex-row gap-4 p-4">
+    <div className="flex w-full flex-row justify-center gap-4 p-4">
       <div className="flex flex-col gap-2">
         <div className="space-y-2">
           {fetchSelectSessionsQuery.data?.map((session) => {
@@ -207,13 +207,17 @@ export default function SessionPage() {
             <PatientExplainerLetter data={generatedSchema} />
           ) : null}
         </div>
-        {getHeidiSessionFromIdQuery.data?.consult_note.result && (
-          <div className="max-w-128 relative max-h-32 overflow-y-auto rounded-lg border border-border">
-            <div className="whitespace-pre-wrap p-4 text-xs">
-              {getHeidiSessionFromIdQuery.data?.consult_note.result}
-            </div>
-          </div>
-        )}
+
+        {/* <details className="transcript">
+          <summary className="list-none">
+            {getHeidiSessionFromIdQuery.data?.consult_note && (
+              <div className="max-h-[500px] max-w-lg overflow-y-auto whitespace-pre-wrap rounded-lg bg-neutral-900 p-4 text-xs text-white">
+                {getHeidiSessionFromIdQuery.data.consult_note.result}
+              </div>
+            )}
+          </summary>
+        </details> */}
+
         <summary className="list-none">
           <details>
             {getHeidiSessionFromIdQuery.data && (
