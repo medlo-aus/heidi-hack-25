@@ -1,6 +1,6 @@
 import { type NextApiRequest, type NextApiResponse } from "next";
 
-import { getHeidiSession } from "../../server/heidi-fns";
+import { getConsultNote, getHeidiSession } from "../../server/heidi-fns";
 
 export default async function handler(
   req: NextApiRequest,
@@ -13,7 +13,21 @@ export default async function handler(
     "11901873742259810244555103576895445913",
   ];
 
-  const session = await getHeidiSession(consultNotes[1]);
+  const allSessions = await Promise.all(
+    consultNotes.map((consultNote) => getHeidiSession(consultNote)),
+  ).then((sessions) => {
+    return sessions;
+    // return sessions.map((session) => {
+    //   return session?.consult_note.result;
+    // });
+  });
 
-  res.status(200).json(session);
+  //   const sessionRes = await getHeidiSession(consultNotes[0]);
+
+  //   const consultRes = await getConsultNote(consultNotes[0]).catch((err) => {
+  //     console.error(err);
+  //     return null;
+  //   });
+
+  res.status(200).json({ allSessions });
 }

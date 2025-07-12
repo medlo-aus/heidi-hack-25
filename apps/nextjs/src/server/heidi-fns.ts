@@ -113,45 +113,89 @@ export const getHeidiSession = async (passedSessionId?: string) => {
     });
   }
 
-  const data = (await response.json()) as {
-    session: {
-      session_id: string;
-      session_name: string;
-      patient: {
-        name: string;
-        gender: string | null;
-        dob: string | null;
-      };
-      audio: unknown[];
-      clinician_notes: unknown[];
-      consult_note: {
-        status: string;
-        result: string;
-        heading: string;
-        brain: string;
-        voice_style: string | null;
-        generation_method: string;
-        template_id: string | null;
-        ai_command_id: string | null;
-        ai_command_text: string | null;
-        feedback: string | null;
-        dictation_cleanup_mode: string | null;
-      };
-      duration: number;
-      created_at: string;
-      updated_at: string;
-      language_code: string;
-      output_language_code: string;
-      documents: unknown | null;
-      ehr_appt_id: string | null;
-      ehr_provider: string;
-      ehr_patient_id: string | null;
-    };
-  };
+  const data = (await response.json()) as SessionResponse;
 
   return {
     ...data.session,
     created_at: new Date(data.session.created_at).toISOString(),
     updated_at: new Date(data.session.updated_at).toISOString(),
+  };
+};
+
+export const getConsultNote = async (sessionId: string) => {
+  const session = await getAuthSession();
+  /**
+GET /sessions/1234567890/consult-note HTTP/1.1
+Authorization: Bearer <your_token>
+Content-Type: application/json
+{
+    "generation_method":"TEMPLATE",
+    "addition":"",
+    "template_id":"659b8042fe093d6592b41ef7",
+    "voice_style":"GOLDILOCKS",
+    "brain":"LEFT"
+}
+   */
+
+  const response = await fetch(
+    `${HEIDI_API_URL}sessions/${sessionId}/consult-note`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${session.token}`,
+      },
+    },
+  );
+
+  if (!response.ok) {
+    console.log(response);
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: `Failed to fetch consult note: ${response.statusText}`,
+    });
+  }
+
+  const data = (await response.json()) as {
+    consult_note: {
+      result: string;
+    };
+  };
+
+  return data;
+};
+
+export type SessionResponse = {
+  session: {
+    session_id: string;
+    session_name: string;
+    patient: {
+      name: string;
+      gender: string | null;
+      dob: string | null;
+    };
+    audio: unknown[];
+    clinician_notes: unknown[];
+    consult_note: {
+      status: string;
+      result: string;
+      heading: string;
+      brain: string;
+      voice_style: string | null;
+      generation_method: string;
+      template_id: string | null;
+      ai_command_id: string | null;
+      ai_command_text: string | null;
+      feedback: string | null;
+      dictation_cleanup_mode: string | null;
+    };
+    duration: number;
+    created_at: string;
+    updated_at: string;
+    language_code: string;
+    output_language_code: string;
+    documents: unknown | null;
+    ehr_appt_id: string | null;
+    ehr_provider: string;
+    ehr_patient_id: string | null;
   };
 };
