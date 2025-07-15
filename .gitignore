@@ -58,3 +58,5 @@ dist/
 
 test-results
 test-results/*
+
+venv/
